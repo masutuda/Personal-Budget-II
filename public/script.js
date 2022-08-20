@@ -54,8 +54,8 @@ const renderWallet = () => {
         <div id="envelopeTop">
           <h3>Wallet</h3>
         </div>
-          <p>Balance: ${response[0].balance}</p>
-          <p>Distribution Amount: ${response[0].distribution}</p>
+          <p>Balance: $${response[0].balance}</p>
+          <p>Distribution Amount: $${response[0].distribution}</p>
         <div id="envelopeBottom"></div>
       </div>`
     walletContainer.appendChild(newEnvelope);
@@ -79,8 +79,8 @@ const renderEnvelopes = (envelopes = []) => {
           <div id="envelopeTop">
             <h3>${envelope.name.toUpperCase()}</h3>
           </div>
-            <p>Max Budget: ${envelope.budget}</p>
-            <p>Balance: ${envelope.balance}</p>
+            <p>Max Budget: $${envelope.budget}</p>
+            <p>Balance: $${envelope.balance}</p>
           <div id="envelopeBottom"></div>
         </div>`
       envelopeContainer.appendChild(newEnvelope);
@@ -93,8 +93,8 @@ const renderEnvelopes = (envelopes = []) => {
           <div id="envelopeTop">
             <h3>${envelopes.envelopeName}</h3>
           </div>
-            <p>Max Budget: ${envelopes.maxBudgetByAmount}</p>
-            <p>Balance: ${envelopes.amountLeft}</p>
+            <p>Max Budget: $${envelopes.maxBudgetByAmount}</p>
+            <p>Balance: $${envelopes.amountLeft}</p>
           <div id="envelopeBottom"></div>
         </div>`
       envelopeContainer.appendChild(newEnvelope);
