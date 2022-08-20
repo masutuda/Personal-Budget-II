@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <title>Personal Envelope Budgeting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Personal Envelope Budgeting</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="add-envelope.html">Add New Envelope</a>
+    <a href="update-envelope.html">Update Envelope</a>
+    <a href="transfer-funds.html">Transfer Funds</a>
+    <a href="delete-envelope.html">Delete Envelope</a>
+  </nav>
+  <p></p>
+  <div id="distributeContainer">
+    <input id="amountToAdd" value="">
+    <button id="add-wallet-funds">DEPOSIT FUNDS</button>
+    <button id="distribute-funds">DISTRIBUTE FUNDS</button>
+  </div>
+  <div id="walletContainer">
+    <script>
+      window.addEventListener('load', event => {
+        renderWallet();
+      });
+    </script>
+  </div>
+  <p></p>
+  <div class="request-buttons">
+    <div>
+      <button id="fetch-envelopes">SHOW ALL ENVELOPES</button>
+      <button onclick="window.location.href='add-envelope.html';">ADD NEW ENVELOPE</button>
+      <button onclick="window.location.href='update-envelope.html';">UPDATE ENVELOPE</button>
+      <button onclick="window.location.href='transfer-funds.html';">TRANSFER FUNDS</button>
+      <button onclick="window.location.href='delete-envelope.html';">DELETE ENVELOPE</button>
+    </div>
+    <div>
+      <button id="fetch-by-envelope">SHOW ENVELOPE</button>
+      <input id="envelopeName" value="">
+    </div>
+    <div>
+      
+    </div>
+  </div>
+  <div id="envelope-container">
+    
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+const { response } = require('express');
+
+const Pool = require('pg').Pool
+const pool = new Pool({
+  user: 'tester',
+  host: 'localhost',
+  database: 'personalbudgetdb',
+  password: 'tester',
+  port: 5432,
+});
+
+const getWalletById = (request, response) => {
+  const id = request.params.id
+  pool.query('SELECT * FROM wallets WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error
+    };
+    response.status(200).json(results.rows);
+  })
+}
+
+const updateWalletById = (request, response) => {
+  const id = request.params.id
+  const distribution = request.query.distribution
+  pool.query('UPDATE wallets SET distribution = $1 WHERE id = $2', [distribution, id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+const depositWallet = (request, response) => {
+  const id = request.params.id
+  const amount = request.query.amount
+
+  pool.query('UPDATE wallets SET balance = balance + $1 WHERE id = $2', [amount, id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+const getEnvelopes = (request, response) => {
+  pool.query('SELECT * FROM envelopes ORDER BY id ASC', (error, results) => {
+    if (error) {
+      throw error
+    };
+    response.status(200).json(results.rows);
+  });
+};
+
+const getEnvelopeByName = (request, response) => {
+  const name = request.params.name
+
+  pool.query('SELECT * FROM envelopes WHERE name = $1', [name], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+const addEnvelope = (request, response) => {
+  const name = request.query.name;
+  const budget = request.query.budget;
+  const balance = request.query.balance;
+
+  pool.query('INSERT INTO envelopes (name, budget, balance) VALUES ($1, $2, $3)', [name, budget, balance], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(201).send({
+      envelope: request.query
+    })
+  })
+}
+
+const updateEnvelope = (request, response) => {
+  const name = request.params.name;
+  const budget = request.query.budget;
+  const withdrawAmount = request.query.withdrawAmount;
+
+  if (budget) {
+    pool.query('UPDATE envelopes SET budget = $1 WHERE name = $2', [budget, name], (error, results) => {
+      if (error) {
+        throw error
+      }
+      request.query.budget = budget;
+      response.status(200).send(
+        {
+        envelope: request.query
+        })
+    })
+  }
+
+  if (withdrawAmount) {
+    pool.query('UPDATE envelopes SET balance = balance - $1 WHERE name = $2', [withdrawAmount, name], (error, results) => {
+      if (error) {
+        throw error
+      }
+      pool.query('SELECT balance FROM envelopes WHERE name = $1', [name], (error, results) => {
+        if (error) {
+          throw error
+        }
+        request.query.balance = results.rows[0].balance;
+        response.status(200).send({
+          envelope: request.query
+        });
+      })
+    })
+  }
+}
+
+const addToEnvelope = (request, response) => {
+    const name = request.params.name;
+    pool.query('UPDATE envelopes SET balance = balance + budget WHERE name = $1', [name], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+}
+
+const deleteEnvelope = (request, response) => {
+  const name = request.params.name;
+
+  pool.query('SELECT balance, wallet_id from envelopes WHERE name = $1', [name], (error, results) => {
+    if (error) {
+      throw error
+    }
+    const leftover = results.rows[0].balance;
+    const walletId = results.rows[0].wallet_id;
+
+    pool.query('DELETE FROM envelopes WHERE name = $1', [name], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send();
+    })
+    pool.query('UPDATE wallets SET balance = balance + $1 WHERE id = $2', [leftover, walletId], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send();
+    })
+  })
+}
+
+const transferEnvelope = (request, response) => {
+  const fromEnvelope = request.params.from;
+  const toEnvelope = request.params.to;
+  const amount = request.query.amount;
+
+  pool.query('UPDATE envelopes SET balance = balance - $1 WHERE name = $2', [amount, fromEnvelope], (error, results) => {
+    if (error) {
+      throw error
+    }
+    //response.status(200);
+  })
+
+  pool.query('UPDATE envelopes SET balance = balance + $1 WHERE name = $2 RETURNING *', [amount, toEnvelope], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).send(results.rows[0]);
+  })
+}
+
+module.exports = {
+  getWalletById,
+  updateWalletById,
+  depositWallet,
+  getEnvelopes,
+  getEnvelopeByName,
+  addEnvelope,
+  updateEnvelope,
+  addToEnvelope,
+  deleteEnvelope,
+  transferEnvelope
+}

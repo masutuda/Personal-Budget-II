@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <title>Personal Budget - Transfer Funds</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Personal Envelope Budgeting</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="add-envelope.html">Add New Envelope</a>
+    <a href="update-envelope.html">Update Envelope</a>
+    <a href="transfer-funds.html">Transfer Funds</a>
+    <a href="delete-envelope.html">Delete Envelope</a>
+  </nav>
+  <h2>Transfer Funds</h2>
+  <div class="inputs">
+    <label for="selectEnvelopeFrom">From Envelope:</label>
+    <form class="myForm">
+        <select class = "selectEnvelope" id="selectEnvelopeFrom"></select>
+    </form>
+    <label for="selectEnvelopeTo">To Envelope:</label>
+    <form class="myForm">
+        <select class = "selectEnvelope" id="selectEnvelopeTo"></select>
+    </form>
+  </div>
+  <div>
+    <label for="transferAmount">Transfer Amount:</label>
+    <input class="numberInput" type="number" pattern="[0-9]" id="transferAmount" value="">
+    <button id="submit-transfer">Transfer Funds</button>
+  </div>
+  <div id="updated-envelope">
+    
+  </div>
+  <script src="transfer-funds.js"></script>
+</body>
+</html>

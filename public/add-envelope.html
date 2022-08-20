@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <title>Personal Budget - Add Envelope</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Personal Envelope Budgeting</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="add-envelope.html">Add New Envelope</a>
+    <a href="update-envelope.html">Update Envelope</a>
+    <a href="transfer-funds.html">Transfer Funds</a>
+    <a href="delete-envelope.html">Delete Envelope</a>
+  </nav>
+  <h2>Add a New Envelope</h2>
+  <div class="inputs">
+    <label for="envelopeName">Envelope Name:</label>
+    <input type = "text" id="envelopeName" value="">
+    <p></p>
+    <label for="budgetAmount">Budget Amount:</label>
+    <input class="numberInput" type = "number" pattern="[0-9]" id="budgetAmount" value="">
+  </div>
+  <div>
+    <p></p>
+    <button id="submit-envelope">Create Envelope</button>
+  </div>
+  <div id="new-envelope">
+    
+  </div>
+  <script src="add-envelope.js"></script>
+</body>
+</html>
