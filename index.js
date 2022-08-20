@@ -21,7 +21,10 @@ app.put('/envelopes/:name', db.updateEnvelope)
 app.put('/envelopes/add/:name', db.addToEnvelope)
 app.put('/envelopes/:from/:to', db.transferEnvelope)
 app.delete('/envelopes/:name', db.deleteEnvelope)
-app.put('/transactions/:envelopeId', db.addTransaction)
+app.get('/transactions', db.getTransactions)
+app.post('/transactions/:envelopeId', db.addTransaction)
+app.put('/transactions/:id', db.updateTransaction)
+app.delete('/transactions/:id', db.deleteTransaction)
 
 
 app.use(express.static('public'));

@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-  <title>Personal Budget - Delete Envelope</title>
+  <title>Personal Budget - View Transactions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,21 +15,29 @@
     <a href="delete-envelope.html">Delete Envelope</a>
     <a href="transactions.html">View Transactions</a>
   </nav>
-  <h2>Delete Envelope</h2>
+  <h2>Transactions</h2>
   <div class="inputs">
-    <label for="selectEnvelope">Envelope Name:</label>
+    <label for="selectTransaction">Transaction ID:</label>
     <form id="myForm">
-        <select class="selectEnvelope" id="selectEnvelope">
+        <select class="selectEnvelope" id="selectTransaction">
           
         </select>
     </form>
   </div>
   <div>
-    <button id="submit-deleteEnvelope">Delete Envelope</button>
+    <button id="submit-deleteTransaction">Delete Transaction</button>
   </div>
-  <div id="deleted-envelope">
+  <div>
+    <input id="updateAmount" value="">
+    <button id="submit-updateAmount">Update Amount</button>
+  </div>
+  <div>
+    <input id="updateRecipient" value="">
+    <button id="submit-updateRecipient">Update Recipient</button>
+  </div>
+  <div id="transactions">
     
   </div>
-  <script src="delete-envelope.js"></script>
+  <script src="transactions.js"></script>
 </body>
 </html>

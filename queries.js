@@ -158,7 +158,6 @@ const transferEnvelope = (request, response) => {
     if (error) {
       throw error
     }
-    //response.status(200);
   })
 
   pool.query('UPDATE envelopes SET balance = balance + $1 WHERE name = $2 RETURNING *', [amount, toEnvelope], (error, results) => {
@@ -167,6 +166,14 @@ const transferEnvelope = (request, response) => {
     }
     response.status(200).send(results.rows[0]);
   })
+}
+const getTransactions = (request, response) => {
+  pool.query('SELECT * FROM transactions ORDER BY id ASC', (error, results) => {
+    if (error) {
+      throw error
+    };
+    response.status(200).json(results.rows);
+  });
 }
 
 const addTransaction = (request, response) => {
@@ -183,6 +190,69 @@ const addTransaction = (request, response) => {
   })
 }
 
+const updateTransaction = (request, response) => {
+  const id = request.params.id;
+  const newAmount = request.query.newAmount;
+  const newRecipient = request.query.newRecipient;
+
+  pool.query('SELECT amount, envelope_id FROM transactions WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    
+    const envelopeId = results.rows[0].envelope_id;
+
+    if (newAmount) {
+      const difference = newAmount - results.rows[0].amount;
+      pool.query('UPDATE transactions SET amount = $1 WHERE id = $2', [newAmount, id], (error, results) => {
+        if (error) {
+          throw error
+        }
+        pool.query('UPDATE envelopes SET balance = balance - $1 WHERE id = $2', [difference, envelopeId], (error, results) => {
+          if (error) {
+            throw error
+          }
+          response.status(200).send();
+        })
+      })
+    }
+  
+    if (newRecipient) {
+      pool.query('UPDATE transactions SET recipient = $1 WHERE id = $2', [newRecipient, id], (error, results) => {
+        if (error) {
+          throw error
+        }
+        response.status(200).send();
+      })
+    }
+  })
+}
+
+const deleteTransaction = (request, response) => {
+  const id = request.params.id;
+
+  pool.query('SELECT amount, envelope_id from transactions WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    const leftover = results.rows[0].amount;
+    const envelopeId = results.rows[0].envelope_id;
+
+    pool.query('DELETE FROM transactions WHERE id = $1', [id], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send();
+    })
+    pool.query('UPDATE envelopes SET balance = balance + $1 WHERE id = $2', [leftover, envelopeId], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send();
+    })
+  })
+}
+
 module.exports = {
   getWalletById,
   updateWalletById,
@@ -194,5 +264,8 @@ module.exports = {
   addToEnvelope,
   deleteEnvelope,
   transferEnvelope,
-  addTransaction
+  getTransactions,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction
 }

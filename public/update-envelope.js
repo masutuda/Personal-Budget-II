@@ -62,7 +62,6 @@ submitWithdraw.addEventListener('click', () => {
   const envelopeName = getEnvelopeName(name);
   const withdrawAmount = document.getElementById('withdrawAmount').value;
   const recipient = document.getElementById('recipient').value.toLowerCase();
-  let newBudgetAmount = 0;
 
   fetch(`/envelopes/${envelopeName.toLowerCase()}?withdrawAmount=${withdrawAmount}`, {
     method: 'PUT',
@@ -70,7 +69,7 @@ submitWithdraw.addEventListener('click', () => {
   .then(response => response.json())
   .then(({envelope}) => {
     fetch(`/transactions/${envelope.id}?amount=${withdrawAmount}&recipient=${recipient}`, {
-      method: 'PUT',
+      method: 'POST',
     })
     const newEnvelope = document.createElement('div');
       newEnvelope.className = 'single-envelope';
