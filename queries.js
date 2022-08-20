@@ -96,15 +96,16 @@ const updateEnvelope = (request, response) => {
   }
 
   if (withdrawAmount) {
-    pool.query('UPDATE envelopes SET balance = balance - $1 WHERE name = $2', [withdrawAmount, name], (error, results) => {
+    pool.query('UPDATE envelopes SET balance = balance - $1 WHERE name = $2 RETURNING *', [withdrawAmount, name], (error, results) => {
       if (error) {
         throw error
       }
-      pool.query('SELECT balance FROM envelopes WHERE name = $1', [name], (error, results) => {
+      pool.query('SELECT balance, id FROM envelopes WHERE name = $1', [name], (error, results) => {
         if (error) {
           throw error
         }
         request.query.balance = results.rows[0].balance;
+        request.query.id = results.rows[0].id
         response.status(200).send({
           envelope: request.query
         });
@@ -168,6 +169,20 @@ const transferEnvelope = (request, response) => {
   })
 }
 
+const addTransaction = (request, response) => {
+  const envelopeId = request.params.envelopeId;
+  const date = new Date();
+  const amount = request.query.amount;
+  const recipient = request.query.recipient;
+
+  pool.query('INSERT INTO transactions (date, amount, recipient, envelope_id) VALUES ($1, $2, $3, $4)', [date, amount, recipient, envelopeId], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).send();
+  })
+}
+
 module.exports = {
   getWalletById,
   updateWalletById,
@@ -178,5 +193,6 @@ module.exports = {
   updateEnvelope,
   addToEnvelope,
   deleteEnvelope,
-  transferEnvelope
+  transferEnvelope,
+  addTransaction
 }

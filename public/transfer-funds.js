@@ -4,6 +4,12 @@ const updatedEnvelopeContainer = document.getElementById('updated-envelope');
 const selectEnvelopeFrom = document.getElementById("selectEnvelopeFrom");
 const selectEnvelopeTo = document.getElementById("selectEnvelopeTo");
 
+const getEnvelopeName = name => {
+  const balanceIndex = name.indexOf('.....')
+  const envelopeName = name.substring(0, balanceIndex - 1);
+  return envelopeName;
+}
+
 // Populate drop down menu
 fetch('/envelopes')
     .then(response => response.json())
@@ -31,8 +37,10 @@ fetch('/envelopes')
 
 
 submitButton.addEventListener('click', () => {
-  const fromEnvelopeName = document.getElementById('selectEnvelopeFrom').value.toLowerCase();
-  const toEnvelopeName = document.getElementById('selectEnvelopeTo').value.toLowerCase();
+  const fromName = document.getElementById('selectEnvelopeFrom').value.toLowerCase();
+  const toName = document.getElementById('selectEnvelopeTo').value.toLowerCase();
+  const fromEnvelopeName = getEnvelopeName(fromName);
+  const toEnvelopeName = getEnvelopeName(toName)
   const transferAmount = Number(document.getElementById('transferAmount').value);
   
   fetch(`/envelopes/${fromEnvelopeName}`)

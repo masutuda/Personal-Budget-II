@@ -2,7 +2,12 @@ const submitNewBudget = document.getElementById('submit-new-budget');
 const submitWithdraw = document.getElementById('submit-withdraw');
 const updatedEnvelopeContainer = document.getElementById('updated-envelope');
 
-//const selectEnvelope = document.getElementById("selectEnvelope");
+const getEnvelopeName = name => {
+  const balanceIndex = name.indexOf('.....')
+  const envelopeName = name.substring(0, balanceIndex - 1);
+  return envelopeName;
+}
+
 
 // Populate drop down menu
 fetch('/envelopes')
@@ -14,21 +19,20 @@ fetch('/envelopes')
             el.textContent = opt;
             el.value = opt;
             updateBudgetEnvelope.appendChild(el);
-            //withdrawEnvelope.appendChild(el);
         };
         for(let i = 0; i < budgetEnvelopes.length; i++) {
           let opt = budgetEnvelopes[i].name.toUpperCase() + ` ..... $${budgetEnvelopes[i].balance}`;
           let el = document.createElement("option");
           el.textContent = opt;
           el.value = opt;
-          //updateBudgetEnvelope.appendChild(el);
           withdrawEnvelope.appendChild(el);
         };
     });
 
 
 submitNewBudget.addEventListener('click', () => {
-  const envelopeName = document.getElementById('updateBudgetEnvelope').value;
+  const name = document.getElementById('updateBudgetEnvelope').value;
+  const envelopeName = getEnvelopeName(name);
   const budgetAmount = document.getElementById('budgetAmount').value;
 
   fetch(`/envelopes/${envelopeName.toLowerCase()}?budget=${budgetAmount}`, {
@@ -54,8 +58,10 @@ submitNewBudget.addEventListener('click', () => {
 
 
 submitWithdraw.addEventListener('click', () => {
-  const envelopeName = document.getElementById('withdrawEnvelope').value;
+  const name = document.getElementById('withdrawEnvelope').value;
+  const envelopeName = getEnvelopeName(name);
   const withdrawAmount = document.getElementById('withdrawAmount').value;
+  const recipient = document.getElementById('recipient').value.toLowerCase();
   let newBudgetAmount = 0;
 
   fetch(`/envelopes/${envelopeName.toLowerCase()}?withdrawAmount=${withdrawAmount}`, {
@@ -63,11 +69,13 @@ submitWithdraw.addEventListener('click', () => {
   })
   .then(response => response.json())
   .then(({envelope}) => {
-    console.log(newBudgetAmount);
+    fetch(`/transactions/${envelope.id}?amount=${withdrawAmount}&recipient=${recipient}`, {
+      method: 'PUT',
+    })
     const newEnvelope = document.createElement('div');
       newEnvelope.className = 'single-envelope';
       newEnvelope.innerHTML = 
-        `<h3>Updated Envelope</h3>
+        `<h3>WITHDREW $${withdrawAmount} FROM ${envelopeName} TO ${recipient.toUpperCase()}</h3>
         <div id="envelopeHolder">
           <div id="envelopeTop">
             <h3>${envelopeName}</h3>
