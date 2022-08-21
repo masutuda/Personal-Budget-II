@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const port = 3000;
+let port = process.env.PORT;
 const db = require('./queries');
 
 app.use(bodyParser.json());
@@ -29,6 +29,8 @@ app.delete('/transactions/:id', db.deleteTransaction)
 
 app.use(express.static('public'));
 
-
+if (port == null || port == "") {
+  port = 5000;
+}
 app.listen(port, () => console.log(`Listening on port: ${port}...`));
 
