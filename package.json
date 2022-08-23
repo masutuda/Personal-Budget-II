@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
+  },
+  "name": "personal-budget-ii",
+  "version": "1.0.0",
+  "description": "budget envelope application project",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masutuda/Personal-Budget-II.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masutuda/Personal-Budget-II/issues"
+  },
+  "homepage": "https://github.com/masutuda/Personal-Budget-II#readme"
+}
